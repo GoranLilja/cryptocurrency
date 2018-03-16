@@ -24,6 +24,11 @@ const people = [
     new Participant("George", "73D33801-3232-4AA2-B79B-DEFF6FFF92CD")
 ]
 
+for (const person of people) {
+    const transaction = new Transaction(null, person.address, 50)
+    lilyCoin.createTransaction(transaction)
+}
+
 for (let i = 0; i < 100; i++) {
     if (Math.random() < 0.2) {
         const miner = people[Math.floor(Math.random() * people.length)]
@@ -45,8 +50,12 @@ for (let i = 0; i < 100; i++) {
 
         const amount = Math.floor(Math.random() * 100)
 
-        console.log(`💵 ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
-        lilyCoin.createTransaction(new Transaction(sender.address, recipient.address, amount))
+        const transactionCreated = lilyCoin.createTransaction(new Transaction(sender.address, recipient.address, amount))
+        if (transactionCreated) {
+            console.log(`💵 ✅ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
+        } else {
+            console.log(`💵 ❌ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
+        }
     }
 }
 

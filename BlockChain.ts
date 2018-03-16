@@ -47,8 +47,12 @@ export class BlockChain {
         return balance
     }
 
-    createTransaction(transaction: Transaction): void {
+    createTransaction(transaction: Transaction): boolean {
+        if (transaction.fromAddress != null && this.getBalanceForAddress(transaction.fromAddress) < transaction.amount) {
+            return false
+        }
         this.pendingTransactions.push(transaction)
+        return true
     }
 
     isChainValid(): boolean {
