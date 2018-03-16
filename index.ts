@@ -1,17 +1,61 @@
 import { BlockChain } from "./BlockChain"
 import { Transaction } from "./Transaction"
 
-const alice = "1B9E14B8-E5D5-41D3-884D-938DA61A9A83"
-const bob = "A7457009-9892-434A-BA77-E57F9D6C1F48"
-const charlie = "8EE34EFF-5B53-4170-98D8-83B888DA68D7"
+const lilyCoin = new BlockChain(18, 100)
+console.log(`Setting difficulty to ${lilyCoin.difficulty}.`)
 
-const lilyCoin = new BlockChain()
-lilyCoin.createTransaction(new Transaction(alice, bob, 100))
-lilyCoin.createTransaction(new Transaction(bob, alice, 20))
-lilyCoin.minePendingTransactions(charlie)
+class Participant {
+    name: string
+    address: string
 
-console.log(`Alice's balance: ${lilyCoin.getBalanceForAddress(alice)}.`)
-console.log(`Bob's balance: ${lilyCoin.getBalanceForAddress(bob)}.`)
-console.log(`Charlie's balance: ${lilyCoin.getBalanceForAddress(charlie)}.`)
+    constructor(name, address) {
+        this.name = name
+        this.address = address
+    }
+}
 
-console.log(`Chain valid? ${lilyCoin.isChainValid() ? "Yes" : "No"}`)
+const people = [
+    new Participant("Alice", "1B9E14B8-E5D5-41D3-884D-938DA61A9A83"),
+    new Participant("Bob", "A7457009-9892-434A-BA77-E57F9D6C1F48"),
+    new Participant("Charlie", "8EE34EFF-5B53-4170-98D8-83B888DA68D7"),
+    new Participant("Daisy", "6141A44E-6ABC-4066-8AC6-F2ABB089818C"),
+    new Participant("Evan", "DC8ADB1F-3440-4F64-9FFC-4F8F1F2B02D2"),
+    new Participant("Faith", "A7D55C95-8A25-480A-AECB-0CA9AD185A77"),
+    new Participant("George", "73D33801-3232-4AA2-B79B-DEFF6FFF92CD")
+]
+
+for (let i = 0; i < 100; i++) {
+    if (Math.random() < 0.2) {
+        const miner = people[Math.floor(Math.random() * people.length)]
+        console.log(`⛏ ${miner.name} mines the pending transactions.`)
+        const result = lilyCoin.minePendingTransactions(miner.address)
+        console.log(`👍 Verified ${result.numberOfTransactions} transactions  (${result.coins} coins). Iterations: ${result.nonce}. Time: ${result.time}.`);
+    } else {
+        let temp = people.map(x => x)
+        
+        const senderIndex = Math.floor(Math.random() * temp.length)
+
+        const sender = temp[senderIndex]
+
+        let receiverIndex = senderIndex
+        while (senderIndex === receiverIndex) {
+            receiverIndex = Math.floor(Math.random() * temp.length)
+        }
+        const recipient = temp[receiverIndex]
+
+        const amount = Math.floor(Math.random() * 100)
+
+        console.log(`💵 ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
+        lilyCoin.createTransaction(new Transaction(sender.address, recipient.address, amount))
+    }
+}
+
+// Calculate any pending transactions
+const result = lilyCoin.minePendingTransactions("")
+console.log(`👍 Verified ${result.numberOfTransactions} transactions  (${result.coins} coins). Iterations: ${result.nonce}. Time: ${result.time}.`);
+
+for (const person of people) {
+    console.log(`${person.name}'s balance: ${lilyCoin.getBalanceForAddress(person.address)}.`)
+}
+
+console.log(lilyCoin.isChainValid() ? "✅ Chain is valid!" : "❌ Chain is NOT valid!")

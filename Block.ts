@@ -7,6 +7,7 @@ export class Block {
     previousHash: string
     hash: string
     nonce: number = 0
+    blockDifficulty: number = 0
 
     constructor(timestamp: number, transactions: Transaction[], previousHash: string = "") {
         this.timestamp = timestamp
@@ -16,18 +17,36 @@ export class Block {
     }
 
     calculateHash(): string {
-        return sha256(this.timestamp + this.previousHash + JSON.stringify(this.transactions) + this.nonce).toString()
+        return sha256(
+            this.timestamp +
+            JSON.stringify(this.transactions) +
+            this.previousHash +
+            this.blockDifficulty +
+            this.nonce).toString()
     }
 
     mineBlock(difficulty: number) {
         const startTime = +new Date()
-        console.log("Start mining block.")
-        while (this.hash.substring(0, difficulty) !== Array(difficulty+1).join("0")) {
+        this.blockDifficulty = difficulty
+        this.hash = this.calculateHash()
+
+        while (this.isHashValid(this.hash, difficulty) === false) {
             this.nonce++
             this.hash = this.calculateHash()
         }
         const totalTime = (+(new Date()) - startTime) / 1000
-        console.log(`Block mined. Hash: ${this.hash}. Nonce: ${this.nonce}. Time spent: ${totalTime}s.`)
-        
+        return { nonce: this.nonce, time: totalTime }
+    }
+
+    private isHashValid(hash: string, num: number): boolean {
+        const int = parseInt(hash, 16);
+        const result = this.leftPad(int.toString(2), this.hash.length * 4, "0")
+        const numberOfZeros = result.indexOf("1")
+        return numberOfZeros === num
+    }
+
+    leftPad(str: string, len: number, ch='0'): string {
+        len = len - str.length + 1;
+        return len > 0 ? new Array(len).join(ch) + str : str;
     }
 }
