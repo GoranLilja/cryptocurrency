@@ -25,7 +25,7 @@ export class Block {
             this.nonce).toString()
     }
 
-    mineBlock(difficulty: number) {
+    mineBlock(difficulty: number): any {
         const startTime = +new Date()
         this.blockDifficulty = difficulty
         this.hash = this.calculateHash()

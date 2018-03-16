@@ -32,7 +32,7 @@ export class BlockChain {
         return {...result, coins: totalCoins, numberOfTransactions: numberOfTransactions}
     }
 
-    getBalanceForAddress(address) {
+    getBalanceForAddress(address): number {
         let balance = 0
         for (const block of this.chain) {
             for (const transaction of block.transactions) {
