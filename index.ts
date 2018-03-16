@@ -8,6 +8,7 @@ class Block {
     data: any
     previousHash: string
     hash: string
+    nonce: number
 
     constructor(index: number, timestamp: number, data: any, previousHash: string = "") {
         this.index = index
@@ -15,15 +16,26 @@ class Block {
         this.data = data
         this.previousHash = previousHash
         this.hash = this.calculateHash()
+        this.nonce = 0
     }
 
     calculateHash(): string {
-        return sha256(this.index + this.timestamp + this.previousHash + JSON.stringify(this.data)).toString()
+        return sha256(this.index + this.timestamp + this.previousHash + JSON.stringify(this.data) + this.nonce).toString()
+    }
+
+    mineBlock(difficulty: number) {
+        while (this.hash.substring(0, difficulty) !== Array(difficulty+1).join("0")) {
+            this.nonce++
+            this.hash = this.calculateHash()
+        }
+        console.log(`Block mined. Hash: ${this.hash}. Nonce: ${this.nonce}.`)
+        
     }
 }
 
 class BlockChain {
     private chain: [Block]
+    private difficulty: number = 10
     constructor() {
         this.chain = [this.createGenisisBlock()]
     }
@@ -39,7 +51,7 @@ class BlockChain {
 
     addBlock(block: Block): Block {
         block.previousHash = this.getLatestBlock().hash
-        block.hash = block.calculateHash()
+        block.mineBlock(this.difficulty)
         this.chain.push(block)
         return block
     }
@@ -58,7 +70,9 @@ class BlockChain {
 }
 
 const lilyCoin = new BlockChain()
+console.log("Mining block 1...")
 lilyCoin.addBlock(new Block(1, + new Date(), { amount: 100 }))
+console.log("Mining block 2...")
 lilyCoin.addBlock(new Block(2, + new Date(), { amount: 120 }))
-console.log(JSON.stringify(lilyCoin, null, 2))
+console.log("Done mining!")
 console.log(`Chain valid? ${lilyCoin.isChainValid() ? "Yes" : "No"}`)
