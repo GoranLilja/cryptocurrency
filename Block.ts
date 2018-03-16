@@ -45,7 +45,7 @@ export class Block {
         return numberOfZeros === num
     }
 
-    leftPad(str: string, len: number, ch='0'): string {
+    private leftPad(str: string, len: number, ch='0'): string {
         len = len - str.length + 1;
         return len > 0 ? new Array(len).join(ch) + str : str;
     }
