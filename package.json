@@ -4,6 +4,7 @@
   "description": "Crypto currency experiment.",
   "main": "index.ts",
   "scripts": {
+    "start": "tsc index.ts && node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Göran Lilja",

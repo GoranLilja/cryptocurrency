@@ -7,4 +7,4 @@ This is an experiment where I'm trying to learn how block chain works.
 2. Checkout this code.
 3. Open up the Terminal and navigate to the folder.
 4. Run `npm install`.
-5. Run `tsc index.ts` to compile the code and then `node index.js` to run it. (Merge them together: `tsc index.ts && node index.js`)
+5. Run `npm start` to compile the code and run it.
