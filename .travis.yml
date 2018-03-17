@@ -3,6 +3,7 @@ node_js:
   - 9
 before_install:
   - npm install -g typescript@1.0
+  - npm install --save-dev jest @types/jest
   - npm install
 script:
   - npm test
