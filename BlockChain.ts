@@ -32,10 +32,20 @@ export class BlockChain {
         return {...result, coins: totalCoins, numberOfTransactions: numberOfTransactions}
     }
 
-    getBalanceForAddress(address): number {
+    getBalanceForAddress(address: string, includePending: boolean = false): number {
         let balance = 0
         for (const block of this.chain) {
             for (const transaction of block.transactions) {
+                if (transaction.fromAddress === address) {
+                    balance -= transaction.amount
+                }
+                if (transaction.toAddress === address) {
+                    balance += transaction.amount
+                }
+            }
+        }
+        if (includePending) {
+            for (const transaction of this.pendingTransactions) {
                 if (transaction.fromAddress === address) {
                     balance -= transaction.amount
                 }

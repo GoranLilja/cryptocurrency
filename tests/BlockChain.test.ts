@@ -40,3 +40,9 @@ test("Miner should get rewarded", () => {
     b.minePendingTransactions("miner")
     expect(b.getBalanceForAddress("miner")).toBe(100)
 })
+
+test("Miner should have a pending reward transaction", () => {
+    const b = new BlockChain(2, 100)
+    b.minePendingTransactions("miner")
+    expect(b.getBalanceForAddress("miner", true)).toBe(100)
+})
