@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "outDir": "built"
+    },
+    "files": [
+        "src/index.ts"
+    ]
+}

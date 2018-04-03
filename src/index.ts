@@ -1,7 +1,7 @@
 import { BlockChain } from "./BlockChain"
 import { Transaction } from "./Transaction"
 
-const lilyCoin = new BlockChain(18, 100)
+const lilyCoin = new BlockChain(25, 100)
 console.log(`Setting difficulty to ${lilyCoin.difficulty}.`)
 
 class Participant {
@@ -29,34 +29,38 @@ for (const person of people) {
     lilyCoin.createTransaction(transaction)
 }
 
-for (let i = 0; i < 100; i++) {
-    if (Math.random() < 0.2) {
+let totalTime = 0
+let numberOfBlocks = 0
+for (let i = 0; i < 20; i++) {
+    //if (Math.random() < 0.2) {
         const miner = people[Math.floor(Math.random() * people.length)]
         console.log(`⛏ ${miner.name} mines the pending transactions.`)
         const result = lilyCoin.minePendingTransactions(miner.address)
-        console.log(`👍 Verified ${result.numberOfTransactions} transactions  (${result.coins} coins). Iterations: ${result.nonce}. Time: ${result.time}.`);
-    } else {
-        let temp = people.map(x => x)
+        console.log(`👍 (${i+1})Verified ${result.numberOfTransactions} transactions  (${result.coins} coins). Iterations: ${result.nonce}. Time: ${result.time}s.`);
+        totalTime += result.time
+        numberOfBlocks++
+    // } else {
+    //     let temp = people.map(x => x)
         
-        const senderIndex = Math.floor(Math.random() * temp.length)
+    //     const senderIndex = Math.floor(Math.random() * temp.length)
 
-        const sender = temp[senderIndex]
+    //     const sender = temp[senderIndex]
 
-        let receiverIndex = senderIndex
-        while (senderIndex === receiverIndex) {
-            receiverIndex = Math.floor(Math.random() * temp.length)
-        }
-        const recipient = temp[receiverIndex]
+    //     let receiverIndex = senderIndex
+    //     while (senderIndex === receiverIndex) {
+    //         receiverIndex = Math.floor(Math.random() * temp.length)
+    //     }
+    //     const recipient = temp[receiverIndex]
 
-        const amount = Math.floor(Math.random() * 100)
+    //     const amount = Math.floor(Math.random() * 100)
 
-        const transactionCreated = lilyCoin.createTransaction(new Transaction(sender.address, recipient.address, amount))
-        if (transactionCreated) {
-            console.log(`💵 ✅ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
-        } else {
-            console.log(`💵 ❌ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
-        }
-    }
+    //     const transactionCreated = lilyCoin.createTransaction(new Transaction(sender.address, recipient.address, amount))
+    //     if (transactionCreated) {
+    //         console.log(`💵 ✅ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
+    //     } else {
+    //         console.log(`💵 ❌ ${sender.name} ➡️ ${recipient.name} ${amount} coins.`)
+    //     }
+    // }
 }
 
 // Calculate any pending transactions
@@ -66,5 +70,5 @@ console.log(`👍 Verified ${result.numberOfTransactions} transactions  (${resul
 for (const person of people) {
     console.log(`${person.name}'s balance: ${lilyCoin.getBalanceForAddress(person.address)}.`)
 }
-
+console.log(`Total mining time: ${totalTime}s for ${numberOfBlocks}. (Average time: ${totalTime/numberOfBlocks}s) Difficulty: ${lilyCoin.difficulty}.`)
 console.log(lilyCoin.isChainValid() ? "✅ Chain is valid!" : "❌ Chain is NOT valid!")
